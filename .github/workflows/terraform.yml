@@ -1,0 +1,58 @@
+name: "random TF Plan"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:    
+    terraform:
+        name: 'Terraform'
+        runs-on: internal
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Setup Terraform
+                uses: hashicorp/setup-terraform@v3
+            
+            -   name: Az CLI login
+                uses: azure/login@v1
+                with:
+                  client-id: "17fb932b-4657-4d70-80ee-4dcd0971acf7"          
+                  tenant-id: "51fb0dd2-ffc9-42ce-bbbc-ae375e225b96"
+                  subscription-id: "08a1bf28-faef-4f29-ac23-b415edf7ca37"
+                  enable-AzPSSession: true
+            
+            # -   name: Terraform Init
+            #     id: init
+            #     run: |
+            #         touch /tmp/prueba.txt
+            #         export TF_LOG=DEBUG 
+            #         export ARM_USE_MSI=true
+            #         export ARM_CLIENT_ID="17fb932b-4657-4d70-80ee-4dcd0971acf7"
+            #         export ARM_SUBSCRIPTION_ID="08a1bf28-faef-4f29-ac23-b415edf7ca37"
+            #         export ARM_TENANT_ID="51fb0dd2-ffc9-42ce-bbbc-ae375e225b96"
+            #         export ARM_ACCESS_KEY=$(az storage account keys list --resource-group "rg-ocio-dev-tfstate" --account-name "infosecociodevtfstate5bn" --query '[0].value' -o tsv)          
+            #         env | grep ARM
+            #         terraform init
+            
+            # -   name: Terraform Format
+            #     run: terraform fmt -check
+
+            # -   name: Terraform Plan
+            #     run: |
+            #       export ARM_CLIENT_ID="89d17d07-e616-43a0-ae8d-91db92152637"
+            #       export ARM_SUBSCRIPTION_ID="11b39dd0-5503-49e3-9509-db162ea82c6f"
+            #       export ARM_TENANT_ID="e2ba673a-b782-4f44-b0b5-93da90258200"
+            #       export ARM_ACCESS_KEY=$(az storage account keys list --resource-group "rg-ocio-dev-tfstate" --account-name "infosecociodevtfstate5bn" --query '[0].value' -o tsv)
+            #       terraform plan
+            #     env:
+            #         ARM_USE_MSI: true
